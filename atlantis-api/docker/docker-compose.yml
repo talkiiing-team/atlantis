@@ -1,0 +1,20 @@
+# This compose-file is intended to be used for development just to run the needed databases.
+# In the future, docker configuration will be extended to run
+
+version: '3.9'
+
+services:
+  mongo:
+    image: arm64v8/mongo:4.2
+    environment:
+      MONGO_INITDB_DATABASE: 'granatdev'
+      MONGO_INITDB_ROOT_USERNAME: 'granatdevuser'
+      MONGO_INITDB_ROOT_PASSWORD: 'supersecure'
+    volumes:
+      - ./localvolumes/mongo:/data/db
+    ports:
+      - '27017:27017'
+
+networks:
+  granetwork:
+    driver: bridge

@@ -1,0 +1,3 @@
+[submodule "shared"]
+	path = shared
+	url = git@github.com:granat-core/granat-shared.git
