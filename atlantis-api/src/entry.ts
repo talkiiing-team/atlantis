@@ -1,7 +1,8 @@
+process.env.NODE_ENV !== 'production' && require('dotenv').config()
+
 import { app } from './app'
 import { mongoClient } from '@/common/db'
 
-require('dotenv').config()
 ;(async () => {
   console.log('Hello')
   app.printRoutes()

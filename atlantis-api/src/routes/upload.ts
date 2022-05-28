@@ -38,6 +38,7 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
       $set: {
         writtenFiles,
         resolved: [],
+        errorFields: [],
         createdAt: new Date(),
       },
     },
@@ -52,29 +53,85 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
   
   console.log('Done with creating, getting heatmap...')
 
-  const heatmap = await PythonClient.getHeatmap({
-    catch: resolveDir(directory, 'catch.csv'),
-    product: resolveDir(directory, 'product.csv'),
-    ext1: resolveDir(directory, 'ext1.csv'),
-    ext2: resolveDir(directory, 'ext2.csv'),
-  })
 
-  console.log('Got heatmap! Updating...')
+  try {
+    const heatmap = await PythonClient.getHeatmap({
+      catch: resolveDir(directory, 'catch.csv'),
+      product: resolveDir(directory, 'product.csv'),
+      ext1: resolveDir(directory, 'ext1.csv'),
+      ext2: resolveDir(directory, 'ext2.csv'),
+    })
 
-  await requestsCollection.updateOne(
-    {
-      _id: insertedId,
-    },
-    {
-      $set: {
-        heatmap: heatmap.data,
-        errorsCount: Object.values(heatmap.data).reduce((acc, val) => acc + ((val as Array<any>)[0] ?? 0), 0)
+    console.log('Got heatmap! Updating...')
+
+    await requestsCollection.updateOne(
+      {
+        _id: insertedId,
       },
-      $push: {
-        resolved: ['heatmap']
-      }
-    },
-  )
+      {
+        $set: {
+          heatmap: heatmap.data,
+          errorsCount: Object.values(heatmap.data).reduce((acc, val) => acc + ((val as Array<any>)[0] ?? 0), 0)
+        },
+        $push: {
+          resolved: 'heatmap'
+        }
+      },
+    )
+  } catch (e) {
+    console.log('Error while getting heatmap! Updating...', e)
+
+    await requestsCollection.updateOne(
+      {
+        _id: insertedId,
+      },
+      {
+        $push: {
+          errorFields: 'heatmap'
+        }
+      },
+    )
+  }
+
+  console.log('Done with heatmap, getting plots...')
+
+  try {
+    const plots = await PythonClient.getPlots({
+      catch: resolveDir(directory, 'catch.csv'),
+      product: resolveDir(directory, 'product.csv'),
+      ext1: resolveDir(directory, 'ext1.csv'),
+      ext2: resolveDir(directory, 'ext2.csv'),
+    })
+
+    console.log('Got plots! Updating...')
+
+    await requestsCollection.updateOne(
+      {
+        _id: insertedId,
+      },
+      {
+        $set: {
+          plots: plots.data,
+        },
+        $push: {
+          resolved: 'plots'
+        }
+      },
+    )
+  } catch (e) {
+    console.log('Error while getting plots! Updating...', e)
+
+    await requestsCollection.updateOne(
+      {
+        _id: insertedId,
+      },
+      {
+        $push: {
+          errorFields: 'plots'
+        }
+      },
+    )
+  }
 
   console.log('Here you go\n\n\n')
 }

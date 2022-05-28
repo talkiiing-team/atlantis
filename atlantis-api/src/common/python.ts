@@ -13,4 +13,9 @@ export class PythonClient {
     const result = await axios.post(PythonClient.getUrl('/heatmap'), paths)
     return result
   }
+
+  static async getPlots(paths: FilesPaths) {
+    const result = await axios.post(PythonClient.getUrl('/plots'), paths)
+    return result
+  }
 }

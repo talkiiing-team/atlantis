@@ -11,7 +11,7 @@
     "build": "vite build --config config/vite.config.ts",
     "dev:nowatch": "node -r ts-node/register -r dotenv/config -r tsconfig-paths/register src/entry.ts",
     "dev": "nodemon nodemon.json",
-    "start": "npm run dev",
+    "start": "NODE_ENV=production npm run dev:nowatch",
     "prisma": "prisma",
     "tsc": "tsc",
     "dep-graph": "depcruise --ts-config tsconfig.json --include-only \"^src\" --output-type dot src | dot -T png > dependencygraph.png"
