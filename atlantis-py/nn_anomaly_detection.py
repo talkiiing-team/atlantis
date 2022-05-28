@@ -113,6 +113,7 @@ def feature_extracting(dct_idves_to_data):
     indexes = pd.Series(indexes)
     return data_a, data_b, data_a_b, data_a_c, data_b_c, data_a_b_c
 
+
 def get_predict(dct_idves_to_data):
     output_data = {}
     THRESHOLD = 20
@@ -153,15 +154,16 @@ def get_predict(dct_idves_to_data):
     scores = (scores-min(scores))/(max(scores) - min(scores)) * 100
     for i in range(len(data_b[0])):
         r = []
-        r.append(class_ids[i])
+        r.append(bool(class_ids[i]))
         s = scores[i]
         probs = data_b_weights * s
-        probs_dict = {data_b[2][i][j]: min(
-            probs[j]*(r[0]*10+1), 100) for j in range(len(probs))}
+        probs_dict = {data_b[2][i][j]: round(
+            min(probs[j]*(r[0]*10+1), 100), 3) for j in range(len(probs))}
         r.append(probs_dict)
-        output_data[data_b[1][i]] = r
+        output_data[int(data_b[1][i])] = r
 
     for i in (set(dct_idves_to_data.keys()) - set(output_data.keys())):
         output_data[i] = []
 
     return output_data
+
