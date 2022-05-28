@@ -52,18 +52,6 @@ const HeaderContent = () => {
             <Button
               size='sm'
               fontSize='md'
-              aria-label='Search by owner'
-              variant='ghost'
-              color='current'
-              textColor='blue.400'
-              leftIcon={<SearchIcon className='h-5 w-5 text-current' />}
-              onClick={() => navigate('/search')}
-            >
-              Поиск по владельцу
-            </Button>
-            <Button
-              size='sm'
-              fontSize='md'
               aria-label='Open Table'
               variant='ghost'
               color='current'
@@ -71,7 +59,7 @@ const HeaderContent = () => {
               leftIcon={<ViewGridIcon className='h-5 w-5 text-current' />}
               onClick={() => navigate('/')}
             >
-              Живая таблица
+              Наборы данных
             </Button>
             <IconButton
               size='sm'

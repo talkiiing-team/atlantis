@@ -1,6 +1,5 @@
 import React from 'react'
-import { pokeCore } from '@/services/pokeCore'
-import { PokeApp } from '@/services/types'
+import { pokeCore, PokeApp } from '@/services/pokeCore'
 
 type ResultComponentPropsType<P> = Omit<P, 'app'> & { app: PokeApp }
 

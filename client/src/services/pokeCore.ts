@@ -1,12 +1,20 @@
-import { EventType, ListenerPoke, PokeApp } from './types'
+import axios from 'axios'
 
-const baseUrl = import.meta.env.PROD
-  ? 'https://ws-apchi.s.talkiiing.ru'
-  : `http://${location.hostname}:3071`
-//'https://enson-back.s.talkiiing.ru'
+export type PokeApp = {
+  service(service: string): (method: string, ...args: any[]) => any
+}
 
-export const pokeCore: PokeApp & Record<any, any> = {} as PokeApp &
-  Record<any, any>
+const baseUrl = 'http://10.10.0.2:8091/'
+
+const ax = axios.create({
+  baseURL: baseUrl,
+})
+
+export const pokeCore: PokeApp & Record<any, any> = {
+  service(service: string): (method: string, ...args: any[]) => any {
+    return (method, ...args) => ax.get(method, { params: args })
+  },
+} as PokeApp & Record<any, any>
 
 /*
 socket.on('connect', () => {
