@@ -113,7 +113,6 @@ def feature_extracting(dct_idves_to_data):
     indexes = pd.Series(indexes)
     return data_a, data_b, data_a_b, data_a_c, data_b_c, data_a_b_c
 
-
 def get_predict(dct_idves_to_data):
     output_data = {}
     THRESHOLD = 20
