@@ -37,7 +37,8 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
     {
       $set: {
         writtenFiles,
-        resolved: false,
+        resolved: [],
+        createdAt: new Date(),
       },
     },
   )
@@ -66,9 +67,12 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
     },
     {
       $set: {
-        resolved: true,
         heatmap: heatmap.data,
+        errorsCount: Object.values(heatmap.data).reduce((acc, val) => acc + ((val as Array<any>)[0] ?? 0), 0)
       },
+      $push: {
+        resolved: ['heatmap']
+      }
     },
   )
 
