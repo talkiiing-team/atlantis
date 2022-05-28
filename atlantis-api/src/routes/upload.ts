@@ -133,5 +133,45 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
     )
   }
 
+  console.log('Done with heatmap, getting graph...')
+
+  try {
+    const graph = await PythonClient.getGraph({
+      catch: resolveDir(directory, 'catch.csv'),
+      product: resolveDir(directory, 'product.csv'),
+      ext1: resolveDir(directory, 'ext1.csv'),
+      ext2: resolveDir(directory, 'ext2.csv'),
+    })
+
+    console.log('Got graph! Updating...')
+
+    await requestsCollection.updateOne(
+      {
+        _id: insertedId,
+      },
+      {
+        $set: {
+          plots: graph.data,
+        },
+        $push: {
+          resolved: 'graph'
+        }
+      },
+    )
+  } catch (e) {
+    console.log('Error while getting graph! Updating...', e)
+
+    await requestsCollection.updateOne(
+      {
+        _id: insertedId,
+      },
+      {
+        $push: {
+          errorFields: 'graph'
+        }
+      },
+    )
+  }
+
   console.log('Here you go\n\n\n')
 }

@@ -18,4 +18,9 @@ export class PythonClient {
     const result = await axios.post(PythonClient.getUrl('/plots'), paths)
     return result
   }
+
+  static async getGraph(paths: FilesPaths) {
+    const result = await axios.post(PythonClient.getUrl('/graph'), paths)
+    return result
+  }
 }
