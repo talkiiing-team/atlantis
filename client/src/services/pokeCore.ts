@@ -4,7 +4,10 @@ export type PokeApp = {
   service(service: string): (method: string, ...args: any[]) => any
 }
 
-const baseUrl = 'http://10.10.0.2:8091/'
+// @ts-ignore
+const baseUrl = import.meta.env.PROD ? 'https://atlantisapi.s.talkiiing.ru' : 'http://10.10.0.2:8091'
+
+console.log('Base URL:', baseUrl)
 
 const ax = axios.create({
   baseURL: baseUrl,
