@@ -4,6 +4,7 @@ import { writeFile, mkdir } from 'fs/promises'
 import { resolve } from 'path'
 import { createSuccess } from '@/common/success'
 import { requestsCollection } from '@/common/db'
+import { PythonClient } from '@/common/python'
 
 const resolveDir = (...args: string[]) =>
   resolve(__dirname, '../../data/', ...args)
@@ -17,11 +18,13 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
 
   const { insertedId } = await requestsCollection.insertOne({})
 
-  await mkdir(resolveDir(insertedId.toString()), { recursive: true })
+  const directory = resolveDir(insertedId.toString())
+
+  await mkdir(directory, { recursive: true })
 
   const writtenFiles: string[] = []
   for await (const part of parts) {
-    const path = resolveDir(insertedId.toString(), part.fieldname)
+    const path = resolveDir(directory, part.fieldname)
 
     await writeFile(path, part.file)
     writtenFiles.push(part.fieldname)
@@ -39,10 +42,35 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
     },
   )
 
-  return res.send(
+  res.send(
     createSuccess({
       insertedId,
       writtenFiles,
     }),
   )
+  
+  console.log('Done with creating, getting heatmap...')
+
+  const heatmap = await PythonClient.getHeatmap({
+    catch: resolveDir(directory, 'catch.csv'),
+    product: resolveDir(directory, 'product.csv'),
+    ext1: resolveDir(directory, 'ext1.csv'),
+    ext2: resolveDir(directory, 'ext2.csv'),
+  })
+
+  console.log('Got heatmap! Updating...')
+
+  await requestsCollection.updateOne(
+    {
+      _id: insertedId,
+    },
+    {
+      $set: {
+        resolved: true,
+        heatmap: heatmap.data,
+      },
+    },
+  )
+
+  console.log('Here you go\n\n\n')
 }
