@@ -48,6 +48,8 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
       writtenFiles,
     }),
   )
+  
+  console.log('Done with creating, getting heatmap...')
 
   const heatmap = await PythonClient.getHeatmap({
     catch: resolveDir(directory, 'catch.csv'),
@@ -56,6 +58,8 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
     ext2: resolveDir(directory, 'ext2.csv'),
   })
 
+  console.log('Got heatmap! Updating...')
+
   await requestsCollection.updateOne(
     {
       _id: insertedId,
@@ -63,8 +67,10 @@ export const upload = async (req: FastifyRequest, res: FastifyReply) => {
     {
       $set: {
         resolved: true,
-        heatmap,
+        heatmap: heatmap.data,
       },
     },
   )
+
+  console.log('Here you go\n\n\n')
 }

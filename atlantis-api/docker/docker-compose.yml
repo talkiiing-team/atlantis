@@ -5,7 +5,7 @@ version: '3.9'
 
 services:
   mongo:
-    image: arm64v8/mongo:4.2
+    image: mongo:4.2
     environment:
       MONGO_INITDB_DATABASE: 'granatdev'
       MONGO_INITDB_ROOT_USERNAME: 'granatdevuser'
