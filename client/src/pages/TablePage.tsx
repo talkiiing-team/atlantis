@@ -100,7 +100,7 @@ export const TablePage = withApp(({ app }) => {
   }, [])
 
   return (
-    <div className='flex h-full w-full flex-col items-center space-y-8'>
+    <div className='flex h-full w-full flex-col items-center space-y-8 pb-20'>
       <div className='mt-28 flex items-center space-x-8'>
         <Heading as='h1' size='xl' noOfLines={1}>
           Наборы данных
@@ -168,7 +168,6 @@ export const TablePage = withApp(({ app }) => {
             </Thead>
             <Tbody>
               {data.map(el => {
-                console.log(DateTime.fromISO(el.createdAt))
                 return (
                   <Tr>
                     <Td>
@@ -176,7 +175,7 @@ export const TablePage = withApp(({ app }) => {
                         'dd.MM.yyyy HH:mm:ss',
                       )}
                     </Td>
-                    {el.resolved.length ? (
+                    {el.resolved?.length ? (
                       el.errorCount ? (
                         <Td className='text-rose-400'>Требует проверки</Td>
                       ) : (

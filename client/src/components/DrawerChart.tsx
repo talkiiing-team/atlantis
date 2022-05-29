@@ -24,6 +24,8 @@ import { currentRecordsStore } from '@/store/currentRecordsStore'
 import { ax } from '@/services/pokeCore'
 import { HeatmapChart } from '@/components/HeatmapChart'
 import { Data } from '@/components/types'
+import { LinesChart } from '@/components/LinesChart'
+import { Graphs } from '@/components/Graphs'
 
 export const DrawerChart = withApp<
   Pick<ReturnType<typeof useDisclosure>, 'isOpen' | 'onOpen' | 'onClose'>
@@ -71,10 +73,10 @@ export const DrawerChart = withApp<
                     <HeatmapChart data={data?.heatmap} />
                   </TabPanel>
                   <TabPanel>
-                    <p>Graph</p>
+                    <Graphs />
                   </TabPanel>
                   <TabPanel>
-                    <p>Chart</p>
+                    <LinesChart data={data?.plots} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>

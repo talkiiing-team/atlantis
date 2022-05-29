@@ -1,0 +1,108 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 500px;
+            height: 500px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"id": 10, "label": 10, "shape": "dot"}, {"id": 60, "label": 60, "shape": "dot"}, {"id": 81, "label": 81, "shape": "dot"}, {"id": 115, "label": 115, "shape": "dot"}, {"id": 172, "label": 172, "shape": "dot"}, {"id": 186, "label": 186, "shape": "dot"}, {"id": 203, "label": 203, "shape": "dot"}, {"id": 208, "label": 208, "shape": "dot"}, {"id": 215, "label": 215, "shape": "dot"}, {"id": 228, "label": 228, "shape": "dot"}, {"id": 263, "label": 263, "shape": "dot"}, {"id": 285, "label": 285, "shape": "dot"}, {"id": 322, "label": 322, "shape": "dot"}, {"id": 332, "label": 332, "shape": "dot"}, {"id": 346, "label": 346, "shape": "dot"}, {"id": 358, "label": 358, "shape": "dot"}, {"id": 405, "label": 405, "shape": "dot"}, {"id": 411, "label": 411, "shape": "dot"}, {"id": 420, "label": 420, "shape": "dot"}, {"id": 428, "label": 428, "shape": "dot"}, {"id": 496, "label": 496, "shape": "dot"}, {"id": 580, "label": 580, "shape": "dot"}, {"id": 601, "label": 601, "shape": "dot"}, {"id": 644, "label": 644, "shape": "dot"}, {"id": 646, "label": 646, "shape": "dot"}, {"id": 663, "label": 663, "shape": "dot"}, {"id": 721, "label": 721, "shape": "dot"}, {"id": 722, "label": 722, "shape": "dot"}, {"id": 728, "label": 728, "shape": "dot"}, {"id": 736, "label": 736, "shape": "dot"}, {"id": 747, "label": 747, "shape": "dot"}, {"id": 761, "label": 761, "shape": "dot"}, {"id": 762, "label": 762, "shape": "dot"}, {"id": 768, "label": 768, "shape": "dot"}, {"id": 808, "label": 808, "shape": "dot"}, {"id": 832, "label": 832, "shape": "dot"}, {"id": 862, "label": 862, "shape": "dot"}, {"id": 895, "label": 895, "shape": "dot"}, {"id": 1124, "label": 1124, "shape": "dot"}, {"id": 1200, "label": 1200, "shape": "dot"}, {"id": 1288, "label": 1288, "shape": "dot"}, {"id": 1291, "label": 1291, "shape": "dot"}, {"id": 1303, "label": 1303, "shape": "dot"}, {"id": 1309, "label": 1309, "shape": "dot"}, {"id": 1310, "label": 1310, "shape": "dot"}, {"id": 1315, "label": 1315, "shape": "dot"}, {"id": 1345, "label": 1345, "shape": "dot"}, {"id": 1376, "label": 1376, "shape": "dot"}, {"id": 1395, "label": 1395, "shape": "dot"}, {"id": 1396, "label": 1396, "shape": "dot"}, {"id": 1400, "label": 1400, "shape": "dot"}, {"id": 1417, "label": 1417, "shape": "dot"}, {"id": 1421, "label": 1421, "shape": "dot"}, {"id": 1424, "label": 1424, "shape": "dot"}, {"id": 1440, "label": 1440, "shape": "dot"}, {"id": 1442, "label": 1442, "shape": "dot"}, {"id": 1458, "label": 1458, "shape": "dot"}, {"id": 1474, "label": 1474, "shape": "dot"}, {"id": 1501, "label": 1501, "shape": "dot"}, {"id": 1516, "label": 1516, "shape": "dot"}, {"id": 1517, "label": 1517, "shape": "dot"}, {"id": 1558, "label": 1558, "shape": "dot"}, {"id": 1560, "label": 1560, "shape": "dot"}, {"id": 1577, "label": 1577, "shape": "dot"}, {"id": 1594, "label": 1594, "shape": "dot"}, {"id": 1597, "label": 1597, "shape": "dot"}, {"id": 1598, "label": 1598, "shape": "dot"}, {"id": 1600, "label": 1600, "shape": "dot"}, {"id": 1616, "label": 1616, "shape": "dot"}, {"id": 1635, "label": 1635, "shape": "dot"}, {"id": 1647, "label": 1647, "shape": "dot"}, {"id": 1657, "label": 1657, "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": 1577, "to": 1400, "weight": 122.47699999999999}, {"from": 496, "to": 322, "weight": 84.22099999999999}, {"from": 761, "to": 428, "weight": 227.988}, {"from": 346, "to": 747, "weight": 201.15500000000003}, {"from": 862, "to": 332, "weight": 194.99400000000006}, {"from": 428, "to": 1616, "weight": 225.632}, {"from": 332, "to": 895, "weight": 192.11800000000005}, {"from": 808, "to": 215, "weight": 226.18299999999996}, {"from": 1291, "to": 1501, "weight": 81.23000000000002}, {"from": 1647, "to": 1558, "weight": 99.7415}, {"from": 215, "to": 358, "weight": 225.25299999999996}, {"from": 1309, "to": 1560, "weight": 48.68029999999999}, {"from": 115, "to": 644, "weight": 162.617}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

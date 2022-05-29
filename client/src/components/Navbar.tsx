@@ -78,7 +78,7 @@ const HeaderContent = () => {
 }
 
 export const Navbar = (props: BoxProps) => {
-  const bg = useColorModeValue('white', 'choc.bg')
+  const bg = useColorModeValue('white', 'gray.800')
   const ref = useRef<HTMLElement>(null)
   const [y, setY] = useState(0)
   const { height = 0 } = ref?.current?.getBoundingClientRect() ?? {}

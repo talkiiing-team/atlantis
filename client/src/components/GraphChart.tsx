@@ -17,7 +17,7 @@ export const Row: FC<{ children: JSX.Element[] | JSX.Element }> = ({
 
 const graph = [[1], [1, 1], [1, 1], [1, 1, 1], [1, 1], [1]]
 
-export const GraphChart = withApp<{ id: number }>(({ app, id }) => {
+export const GraphChart = withApp<{ id: string }>(({ app, id }) => {
   const visualizedGraph = useMemo(() => {
     return graph.map(row => (
       <Row>

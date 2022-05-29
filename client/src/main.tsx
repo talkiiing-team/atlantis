@@ -7,6 +7,8 @@ import './index.css'
 import { RecoilRoot } from 'recoil'
 import { TablePage } from '@/pages/TablePage'
 import { SearchPage } from '@/pages/SearchPage'
+import { Chart, registerables } from 'chart.js'
+Chart.register(...registerables)
 
 const theme = extendTheme({
   config: {
