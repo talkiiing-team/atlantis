@@ -9,13 +9,33 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Input,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   useDisclosure,
 } from '@chakra-ui/react'
 import { GraphChart } from '@/components/GraphChart'
+import { useEffect, useState } from 'react'
+import { useRecoilState } from 'recoil'
+import { currentRecordsStore } from '@/store/currentRecordsStore'
+import { ax } from '@/services/pokeCore'
 
 export const DrawerChart = withApp<
   Pick<ReturnType<typeof useDisclosure>, 'isOpen' | 'onOpen' | 'onClose'>
 >(({ app, isOpen, onOpen, onClose }) => {
+  const [data, setData] = useState()
+
+  const [currentRecord, setCurrentRecord] = useRecoilState(currentRecordsStore)
+
+  useEffect(() => {
+    if (currentRecord.length)
+      ax.get(`requests/${currentRecord}`).then(r => {
+        console.log(r)
+      })
+  }, [currentRecord])
+
   return (
     <>
       <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='xl'>
@@ -25,6 +45,25 @@ export const DrawerChart = withApp<
           <DrawerHeader>Данные по ловле</DrawerHeader>
 
           <DrawerBody>
+            <Tabs>
+              <TabList>
+                <Tab>One</Tab>
+                <Tab>Two</Tab>
+                <Tab>Three</Tab>
+              </TabList>
+
+              <TabPanels>
+                <TabPanel>
+                  <p>one!</p>
+                </TabPanel>
+                <TabPanel>
+                  <p>two!</p>
+                </TabPanel>
+                <TabPanel>
+                  <p>three!</p>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
             <GraphChart id={1} />
           </DrawerBody>
 
@@ -33,7 +72,7 @@ export const DrawerChart = withApp<
               Создать отчет...
             </Button>
             <Button variant='outline' onClick={onClose}>
-              Понятно
+              Закрыть
             </Button>
           </DrawerFooter>
         </DrawerContent>

@@ -4,15 +4,15 @@ export type PokeApp = {
   service(service: string): (method: string, ...args: any[]) => any
 }
 
-const baseUrl = 'http://10.10.0.2:8091/'
+const baseUrl = 'https://atlantisapi.s.talkiiing.ru/'
 
-const ax = axios.create({
+export const ax = axios.create({
   baseURL: baseUrl,
 })
 
 export const pokeCore: PokeApp & Record<any, any> = {
-  service(service: string): (method: string, ...args: any[]) => any {
-    return (method, ...args) => ax.get(method, { params: args })
+  service(serviceName: string): (method: string, ...args: any[]) => any {
+    return (method, ...args) => ax.get(serviceName + method, { params: args })
   },
 } as PokeApp & Record<any, any>
 
