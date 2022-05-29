@@ -9,6 +9,7 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Input,
+  Spinner,
   Tab,
   TabList,
   TabPanel,
@@ -17,24 +18,34 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { GraphChart } from '@/components/GraphChart'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { currentRecordsStore } from '@/store/currentRecordsStore'
 import { ax } from '@/services/pokeCore'
+import { HeatmapChart } from '@/components/HeatmapChart'
+import { Data } from '@/components/types'
 
 export const DrawerChart = withApp<
   Pick<ReturnType<typeof useDisclosure>, 'isOpen' | 'onOpen' | 'onClose'>
 >(({ app, isOpen, onOpen, onClose }) => {
-  const [data, setData] = useState()
+  const [data, setData] = useState<Data>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   const [currentRecord, setCurrentRecord] = useRecoilState(currentRecordsStore)
 
   useEffect(() => {
+    setLoading(true)
     if (currentRecord.length)
       ax.get(`requests/${currentRecord}`).then(r => {
         console.log(r)
+        setData(r.data.data)
+        setLoading(false)
       })
   }, [currentRecord])
+
+  const tabNames = useMemo(() => {
+    return data ? data.resolved.map(key => key) : []
+  }, [data])
 
   return (
     <>
@@ -45,26 +56,29 @@ export const DrawerChart = withApp<
           <DrawerHeader>Данные по ловле</DrawerHeader>
 
           <DrawerBody>
-            <Tabs>
-              <TabList>
-                <Tab>One</Tab>
-                <Tab>Two</Tab>
-                <Tab>Three</Tab>
-              </TabList>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <Tabs>
+                <TabList>
+                  <Tab disabled={!tabNames.includes('heatmap')}>Heatmap</Tab>
+                  <Tab disabled={!tabNames.includes('graph')}>Graph</Tab>
+                  <Tab disabled={!tabNames.includes('chart')}>Chart</Tab>
+                </TabList>
 
-              <TabPanels>
-                <TabPanel>
-                  <p>one!</p>
-                </TabPanel>
-                <TabPanel>
-                  <p>two!</p>
-                </TabPanel>
-                <TabPanel>
-                  <p>three!</p>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-            <GraphChart id={1} />
+                <TabPanels>
+                  <TabPanel>
+                    <HeatmapChart data={data?.heatmap} />
+                  </TabPanel>
+                  <TabPanel>
+                    <p>Graph</p>
+                  </TabPanel>
+                  <TabPanel>
+                    <p>Chart</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            )}
           </DrawerBody>
 
           <DrawerFooter>

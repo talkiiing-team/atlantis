@@ -26,7 +26,13 @@ import {
   EyeIcon,
   RefreshIcon,
 } from '@heroicons/react/outline'
-import { FormEvent, useCallback, useEffect, useState } from 'react'
+import {
+  FormEvent,
+  FormEventHandler,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { DrawerChart } from '@/components/DrawerChart'
 import { DateTime } from 'luxon'
 import { ax } from '@/services/pokeCore'
@@ -65,7 +71,13 @@ export const TablePage = withApp(({ app }) => {
       .service('requests')('')
       .then((r: any) => {
         console.log(r)
-        setData(r.data.data)
+        setData(
+          (r.data.data as Request[]).sort(
+            (a, b) =>
+              DateTime.fromISO(b.createdAt).toSeconds() -
+              DateTime.fromISO(a.createdAt).toSeconds(),
+          ),
+        )
         setLoading(false)
       })
   }, [])
@@ -74,15 +86,11 @@ export const TablePage = withApp(({ app }) => {
     resfreshTable()
   }, [])
 
-  const formSubmit = useCallback((event: any) => {
+  const formSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const formData = new FormData(event.target.form)
+    const formData = new FormData(event.currentTarget)
 
-    ax.post('upload', formData, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-      },
-    })
+    ax.post('upload', formData)
       .then(res => {
         console.log(`Success` + res.data)
       })
@@ -135,7 +143,7 @@ export const TablePage = withApp(({ app }) => {
                 <span className='text-slate-300'>External 2</span>
                 <input accept='text/csv' name='ext2.csv' type='file' />
               </div>
-              <Button>Загрузить</Button>
+              <Button type='submit'>Загрузить</Button>
             </form>
           </AccordionPanel>
         </AccordionItem>
