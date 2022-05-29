@@ -1,29 +1,74 @@
-# granat-api
+# atlantis-api
 
-Serverless API
+### `POST /upload`
 
-## Как развернуть локально
+`Content-Type`: `multipart/form-data`
 
-1. Поднимаем PostgreSQL локально
-2. Создаем `.env` со следующим содержимым:
-   ```
-   DATABASE_URL=
-   ```
-   И указываем connection string для подключения
-3. `npm run dev`
+Receives 4 fields:
+* `ext1.csv`
+* `ext2.csv`
+* `catch.csv`
+* `product.csv`
 
-## Инфраструктура
+Returns:
 
-- `api` - точка входа для Vercel
-- `app` - приложение на [Fastify](https://www.fastify.io/) со всеми клиентами и
-  контейнером с зависимостями
-- `libs` - ограниченные контексты для сервисов
-  ([подробнее](https://talkiiing.myjetbrains.com/youtrack/articles/LU-A-6/%D0%90%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0))
-- `prisma` - всё что относится к ORM [Prisma](https://prisma.io) (модели,
-  миграции и т.д.)
-- `shared` - [сабмодуль](https://github.com/granat-core/granat-shared) с
-  конфигами и экшнами для github actions
+```jsonc
+{
+  "type": "success",
+  "data": {
+    "insertedId": "this is mongo db objectId",
+    "writtenFiles": ["array", "of", "written", "files"]
+  }
+}
+```
 
-## Деплой
+### `GET /requests`
 
-API деплоится на Vercel в виде одной единственной Serverless-функции.
+List all requests ever made
+
+Returns:
+
+```jsonc
+{
+  "type": "success",
+  "data": [
+    {
+      "_id": "id from mongo db",
+      "resolved": [],
+      "createdAt": "iso date string"
+    },
+    {
+      "_id": "id from mongo db",
+      "resolved": ["heatmap", "graph", "plots"], // array of things that are ready
+      "errorCount": 9,
+      "createdAt": "iso date string"
+    }
+  ]
+}
+```
+
+### `GET /requests/ID`
+
+Parameters:
+
+`ID`: id from mongo db
+
+You can also pass querystring as follows:
+
+```
+GET /requests/ID?select[]=heatmap&select[]=graph&select[]=plots
+```
+
+and you will be given back the requested fields.
+Omit this, if you want to have all of them.
+
+Returns:
+
+```jsonc
+{
+  "type": "success",
+  "data": {
+    // fields
+  }
+}
+```

@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:4.2
+    environment:
+      MONGO_INITDB_DATABASE: 'granatdev'
+      MONGO_INITDB_ROOT_USERNAME: 'granatdevuser'
+      MONGO_INITDB_ROOT_PASSWORD: 'supersecure'
+    volumes:
+      - ./localvolumes/mongo:/data/db
+    ports:
+      # used for debug, may be deleted
+      - '27017:27017'
+  
+  atlantisapi:
+    build: ./atlantis-api
+    environment:
+      MONGODB_CONNECTION_STRING: mongodb://granatdevuser:supersecure@mongo:27017/granatdev?authSource=admin
+      PYTHON_BACKEND_URL: http://atlantispy:8090
+    volumes:
+      - ./localvolumes/atlantis-api-data:/usr/src/app/data
+    ports:
+      - '8091:8091'
+    depends_on:
+      - mongo
+
+  atlantispy:
+    build: ./atlantis-py
+    volumes:
+      - ./localvolumes/atlantis-api-data:/usr/src/app/data
+    ports:
+      # needs to be open
+      - '8090:8090'
+  
+  atlantisclient:
+    build: ./client
+    environment:
+      NODE_BACKEND_URL: https://atlantisapi.s.talkiiing.ru
+    ports:
+      # needs to be proxy-passed
+      - '8092:8080'
+
+networks:
+  granetwork:
+    driver: bridge

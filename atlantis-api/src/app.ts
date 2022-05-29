@@ -1,7 +1,8 @@
 import fastify from 'fastify'
 import fastifyMultipart from '@fastify/multipart'
 import { upload } from '@/routes/upload'
-import { callback } from '@/routes/callback'
+import { requests } from '@/routes/requests'
+import { request } from '@/routes/request'
 import fastifyCors from '@fastify/cors'
 
 const app = fastify()
@@ -10,6 +11,7 @@ app.register(fastifyCors)
 app.register(fastifyMultipart)
 
 app.post('/upload', upload)
-app.post('/__callback', callback)
+app.get('/requests', requests)
+app.get('/requests/:id', request)
 
 export { app }
